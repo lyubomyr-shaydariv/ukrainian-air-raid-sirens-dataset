@@ -35,3 +35,30 @@ There are two permanent sirens:
 2. In **Crimea** from December 10 at 10:22 PM (UTC+00) or December 11 at 12:22 AM (local time)
 
 They are not listed in datasets, so you may want to process them manually.
+
+## Process `oblasts_only.csv`
+
+### Extract all oblasts
+
+```shell
+./extract-oblasts_only.csv-oblasts.awk \
+	< oblasts_only.csv
+```
+
+### Convert single oblast CSV data to an iCalendar file
+
+```shell
+./convert-oblasts_only.csv-to-ics.awk -v OBLAST='Львівська область' \
+	< oblasts_only.csv \
+	> 'Львівська область.ics'
+```
+
+### Convert all calendars (`bash`) with _O(n<sup>2</sup>)_ complexity
+
+```shell
+while read -r OBLAST; do
+	./convert-oblasts_only.csv-to-ics.awk -v OBLAST="$OBLAST" \
+		< oblasts_only.csv \
+		> "$OBLAST.ics"
+done < <(./extract-oblasts_only.csv-oblasts.awk < oblasts_only.csv)
+```
